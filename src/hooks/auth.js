@@ -51,6 +51,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             })
     }
 
+
     const forgotPassword = async ({ setErrors, setStatus, email }) => {
         await csrf()
 

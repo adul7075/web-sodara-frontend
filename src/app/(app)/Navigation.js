@@ -1,157 +1,167 @@
-import ApplicationLogo from '@/components/ApplicationLogo'
-import Dropdown from '@/components/Dropdown'
-import Link from 'next/link'
-import NavLink from '@/components/NavLink'
-import ResponsiveNavLink, {
-    ResponsiveNavButton,
-} from '@/components/ResponsiveNavLink'
-import { DropdownButton } from '@/components/DropdownLink'
-import { useAuth } from '@/hooks/auth'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+"use client";
 
-const Navigation = ({ user }) => {
-    const { logout } = useAuth()
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "@/hooks/auth";
+import {
+  LayoutDashboard,
+  Users,
+  Package,
+  LogOut,
+  Menu, Home,
+  X, Brain, ShoppingCart, 
+  TruckElectric, TrendingUp,
+} from "lucide-react";
+import ApplicationLogo from "@/components/ApplicationLogo";
 
-    const [open, setOpen] = useState(false)
+export default function Navigation({ user }) {
+  const { logout } = useAuth();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(true);
 
-    return (
-        <nav className="bg-white border-b border-gray-100">
-            {/* Primary Navigation Menu */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
-                    <div className="flex">
-                        {/* Logo */}
-                        <div className="flex-shrink-0 flex items-center">
-                            <Link href="/dashboard">
-                                <ApplicationLogo className="block h-10 w-auto fill-current text-gray-600" />
-                            </Link>
-                        </div>
+  const linkss = [
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: <Home size={20} />,
+    },
+	{
+      name: "Cross Seeling",
+      href: "/cross_sell",
+      icon: <Brain size={20} />,
+    },
+	{
+      name: "Barang",
+      href: "/barang",
+      icon: <Package size={20} />,
+    },
+	{
+      name: "instertOrder",
+      href: "/pesanan",
+      icon: <LayoutDashboard size={20} />,
+    },
+	{
+      name: "Customer",
+      href: "/customer",
+      icon: <Users size={20} />,
+    },
+  ];
+  
+  
+  /**
+   * ==========================
+   * MENU BERDASARKAN ROLE
+   * ==========================
+   */
+  const allMenus = {
+    admin: [
+      { name: "Dashboard KMeans", href: "/dashboard", icon: <LayoutDashboard size={20} /> },
+      { name: "CRM", href: "/cross_sell", icon: <TrendingUp size={20} /> },
+      { name: "Barang", href: "/barang", icon: <Package size={20} /> },
+      { name: "Insert Order", href: "/pesanan", icon: <ShoppingCart size={20} /> },
+      { name: "Customer", href: "/customer", icon: <Users size={20} /> },
+	  { name: "Rekap Transaksi", href: "/sumtransaksi", icon: <TruckElectric size={20} /> },
+    ],
 
-                        {/* Navigation Links */}
-                        <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                            <NavLink
-                                href="/dashboard"
-                                active={usePathname() === '/dashboard'}>
-                                Dashboard
-                            </NavLink>
-                        </div>
-                    </div>
+    user: [
+      { name: "Barang", href: "/barang", icon: <Package size={20} /> },
+      { name: "Insert Order", href: "/pesanan", icon: <ShoppingCart size={20} /> },
+      { name: "Customer", href: "/customer", icon: <Users size={20} /> },
+    ],
 
-                    {/* Settings Dropdown */}
-                    <div className="hidden sm:flex sm:items-center sm:ml-6">
-                        <Dropdown
-                            align="right"
-                            width="48"
-                            trigger={
-                                <button className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
-                                    <div>{user?.name}</div>
+    pembeli: [
+	{ name: "Pembelian", href: "/buyproduct", icon: <ShoppingCart  size={20} /> },
+    ],
+  };
 
-                                    <div className="ml-1">
-                                        <svg
-                                            className="fill-current h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    </div>
-                                </button>
-                            }>
-                            {/* Authentication */}
-                            <DropdownButton onClick={logout}>
-                                Logout
-                            </DropdownButton>
-                        </Dropdown>
-                    </div>
+  // default role jika user belum ke-load
+  const role = user?.role_type || "user";
+  const links = allMenus[role];
 
-                    {/* Hamburger */}
-                    <div className="-mr-2 flex items-center sm:hidden">
-                        <button
-                            onClick={() => setOpen(open => !open)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                            <svg
-                                className="h-6 w-6"
-                                stroke="currentColor"
-                                fill="none"
-                                viewBox="0 0 24 24">
-                                {open ? (
-                                    <path
-                                        className="inline-flex"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                ) : (
-                                    <path
-                                        className="inline-flex"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                )}
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="flex">
+  <aside
+    className={`${
+      open ? "w-64" : "w-20"
+    } bg-white border-r border-gray-200 h-screen p-4 flex flex-col justify-between fixed transition-all duration-300`}
+  >
+    <div>
+      {/* Header / Logo */}
+<div className="flex items-center justify-between mb-8 h-14 px-1">
 
-            {/* Responsive Navigation Menu */}
-            {open && (
-                <div className="block sm:hidden">
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink
-                            href="/dashboard"
-                            active={usePathname() === '/dashboard'}>
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
+  {/* Logo - tampil hanya ketika open */}
+  {open ? (
+    <Link href="/welcome" className="flex items-center gap-3">
+      <ApplicationLogo className="h-8 w-auto text-gray-700" />
+      <span className="font-semibold text-gray-800 text-lg tracking-wide">
+        ETMI SHOP
+      </span>
+    </Link>
+  ) : (
+    <div className="w-8" /> // Placeholder biar hamburger tetap rata
+  )}
 
-                    {/* Responsive Settings Options */}
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="flex items-center px-4">
-                            <div className="flex-shrink-0">
-                                <svg
-                                    className="h-10 w-10 fill-current text-gray-400"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                </svg>
-                            </div>
+  {/* Hamburger Button */}
+  <button
+    onClick={() => setOpen(!open)}
+    className="p-2 rounded-md hover:bg-gray-100 text-gray-600 flex items-center justify-center transition"
+  >
+    {open ? <X size={22} /> : <Menu size={22} />}
+  </button>
+</div>
 
-                            <div className="ml-3">
-                                <div className="font-medium text-base text-gray-800">
-                                    {user?.name}
-                                </div>
-                                <div className="font-medium text-sm text-gray-500">
-                                    {user?.email}
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="mt-3 space-y-1">
-                            {/* Authentication */}
-                            <ResponsiveNavButton onClick={logout}>
-                                Logout
-                            </ResponsiveNavButton>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </nav>
-    )
+
+      {/* Navigation */}
+      <nav className="space-y-2">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-all ${
+              pathname === link.href ? "bg-gray-200 font-medium" : ""
+            }`}
+          >
+            {link.icon}
+            {open && <span>{link.name}</span>}
+          </Link>
+        ))}
+      </nav>
+    </div>
+
+    {/* Bottom User Section */}
+    <div className="border-t border-gray-200 pt-4 mt-6">
+      <div className="flex items-center gap-3 px-2 mb-3">
+        <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-semibold">
+          {user?.name?.[0]?.toUpperCase() || "U"}
+        </div>
+        {open && (
+          <div>
+            <p className="font-medium text-gray-800">{user?.name}</p>
+            <p className="text-sm text-gray-500">{user?.email}</p>
+			<p className="text-sm text-gray-500">{user?.role_type} - {user?.id_pelanggan}</p>
+          </div>
+        )}
+      </div>
+
+      <button
+        onClick={logout}
+        className="flex items-center gap-3 px-3 py-2 w-full text-red-600 hover:bg-red-50 rounded-lg transition-all"
+      >
+        <LogOut size={20} />
+        {open && <span>Logout</span>}
+      </button>
+    </div>
+  </aside>
+
+  {/* Main Content */}
+  <main
+    className={`flex-1 ml-${open ? "64" : "20"} transition-all duration-300 p-0`}
+  >
+    {/* PAGE CONTENT */}
+  </main>
+</div>
+
+  );
 }
-
-export default Navigation

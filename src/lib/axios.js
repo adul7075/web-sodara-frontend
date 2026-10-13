@@ -9,4 +9,6 @@ const axios = Axios.create({
     withXSRFToken: true
 })
 
+export const csrf = () => axios.get('/sanctum/csrf-cookie')
+
 export default axios
