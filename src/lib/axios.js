@@ -1,7 +1,7 @@
 import Axios from 'axios'
 
 const axios = Axios.create({
-    baseURL: 'https://web-sodara-backend-production.up.railway.app',
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
     },
